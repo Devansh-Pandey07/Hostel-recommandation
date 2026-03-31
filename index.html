@@ -127,7 +127,7 @@ for(let i=0;i<hostels.length;i++){
 
 if(hostels[i].bed == bed && hostels[i].ac == ac){
 
-let chance = (cgpa/10) * hostels[i].beds;
+let chance = ((cgpa / 10) * (hostels[i].beds / 248)) * 100;
 
 filtered.push({
 block:hostels[i].block,
