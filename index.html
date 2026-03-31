@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Hostel Recommendation System</title>
+
+<style>
+
+body{
+font-family: Arial, sans-serif;
+background: linear-gradient(135deg,#1e3c72,#2a5298);
+color:white;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+margin:0;
+}
+
+.container{
+background:white;
+color:black;
+padding:30px;
+border-radius:12px;
+width:400px;
+box-shadow:0 10px 30px rgba(0,0,0,0.3);
+}
+
+h2{
+text-align:center;
+}
+
+input,select,button{
+width:100%;
+padding:10px;
+margin-top:10px;
+border-radius:6px;
+border:1px solid #ccc;
+}
+
+button{
+background:#2a5298;
+color:white;
+font-weight:bold;
+cursor:pointer;
+}
+
+button:hover{
+background:#1e3c72;
+}
+
+.result{
+margin-top:20px;
+background:#f2f2f2;
+padding:15px;
+border-radius:8px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>Hostel Recommendation</h2>
+
+<label>CGPA</label> <input type="number" id="cgpa" step="0.1" placeholder="Enter CGPA">
+
+<label>Bed Type</label> <select id="bed">
+
+<option value="1">1 Bed</option>
+<option value="2">2 Bed</option>
+<option value="3">3 Bed</option>
+<option value="4">4 Bed</option>
+<option value="6">6 Bed</option>
+</select>
+
+<label>AC Preference</label> <select id="ac">
+
+<option value="1">AC</option>
+<option value="0">Non-AC</option>
+</select>
+
+<button onclick="recommend()">Find Hostel</button>
+
+<div class="result" id="result"></div>
+
+</div>
+
+<script>
+
+const hostels = [
+{block:"A",bed:4,ac:1,beds:36},
+{block:"F",bed:4,ac:1,beds:8},
+{block:"K",bed:4,ac:1,beds:36},
+{block:"R",bed:4,ac:1,beds:204},
+{block:"T",bed:4,ac:1,beds:248}
+];
+
+function recommend(){
+
+let cgpa=parseFloat(document.getElementById("cgpa").value);
+let bed=parseInt(document.getElementById("bed").value);
+let ac=parseInt(document.getElementById("ac").value);
+
+let filtered=hostels.filter(h=>h.bed==bed && h.ac==ac);
+
+filtered.forEach(h=>{
+h.chance=(h.beds/248)*(cgpa/10)*100;
+});
+
+filtered.sort((a,b)=>b.chance-a.chance);
+
+let output="<b>Top Hostel Options</b><br><br>";
+
+filtered.slice(0,3).forEach((h,i)=>{
+output+=`${i+1}. Block ${h.block} | Beds ${h.beds} | Chance ${h.chance.toFixed(2)}%<br>`;
+});
+
+document.getElementById("result").innerHTML=output;
+
+}
+
+</script>
+
+</body>
+</html>
