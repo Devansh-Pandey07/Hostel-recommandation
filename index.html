@@ -1,62 +1,64 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Hostel Recommendation System</title>
+<title>VIT Hostel Recommendation</title>
 
 <style>
-
 body{
-font-family: Arial, sans-serif;
-background: linear-gradient(135deg,#1e3c72,#2a5298);
-color:white;
-display:flex;
-justify-content:center;
-align-items:center;
-height:100vh;
-margin:0;
+    font-family: Arial;
+    background: linear-gradient(135deg,#2c4a7a,#1f3560);
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
 }
 
 .container{
-background:white;
-color:black;
-padding:30px;
-border-radius:12px;
-width:400px;
-box-shadow:0 10px 30px rgba(0,0,0,0.3);
+    background:#e9e9e9;
+    padding:30px;
+    border-radius:12px;
+    width:400px;
 }
 
 h2{
-text-align:center;
+    text-align:center;
 }
 
-input,select,button{
-width:100%;
-padding:10px;
-margin-top:10px;
-border-radius:6px;
-border:1px solid #ccc;
+label{
+    display:block;
+    margin-top:15px;
+}
+
+input,select{
+    width:100%;
+    padding:10px;
+    margin-top:5px;
+    border-radius:6px;
+    border:1px solid #ccc;
 }
 
 button{
-background:#2a5298;
-color:white;
-font-weight:bold;
-cursor:pointer;
+    width:100%;
+    padding:12px;
+    margin-top:20px;
+    background:#2c4a7a;
+    color:white;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
 }
 
 button:hover{
-background:#1e3c72;
+    background:#1f3560;
 }
 
 .result{
-margin-top:20px;
-background:#f2f2f2;
-padding:15px;
-border-radius:8px;
+    margin-top:20px;
+    background:#dcdcdc;
+    padding:15px;
+    border-radius:8px;
 }
-
 </style>
 
 </head>
@@ -67,10 +69,11 @@ border-radius:8px;
 
 <h2>Hostel Recommendation</h2>
 
-<label>CGPA</label> <input type="number" id="cgpa" step="0.1" placeholder="Enter CGPA">
+<label>CGPA</label>
+<input type="number" id="cgpa" step="0.1" placeholder="Enter CGPA">
 
-<label>Bed Type</label> <select id="bed">
-
+<label>Bed Type</label>
+<select id="bed">
 <option value="1">1 Bed</option>
 <option value="2">2 Bed</option>
 <option value="3">3 Bed</option>
@@ -78,49 +81,88 @@ border-radius:8px;
 <option value="6">6 Bed</option>
 </select>
 
-<label>AC Preference</label> <select id="ac">
-
+<label>AC Preference</label>
+<select id="ac">
 <option value="1">AC</option>
 <option value="0">Non-AC</option>
 </select>
 
 <button onclick="recommend()">Find Hostel</button>
 
-<div class="result" id="result"></div>
+<div class="result" id="result">
+Top Hostel Options will appear here
+</div>
 
 </div>
+
 
 <script>
 
 const hostels = [
-{block:"A",bed:4,ac:1,beds:36},
-{block:"F",bed:4,ac:1,beds:8},
-{block:"K",bed:4,ac:1,beds:36},
-{block:"R",bed:4,ac:1,beds:204},
-{block:"T",bed:4,ac:1,beds:248}
+
+{block:"T", bed:4, ac:1, beds:248},
+{block:"R", bed:4, ac:1, beds:204},
+{block:"A", bed:4, ac:1, beds:36},
+
+{block:"F", bed:2, ac:1, beds:130},
+{block:"K", bed:4, ac:1, beds:36},
+{block:"L", bed:4, ac:0, beds:12},
+
+{block:"A", bed:2, ac:0, beds:10},
+{block:"A", bed:4, ac:1, beds:36},
+{block:"A", bed:4, ac:0, beds:32},
+{block:"B", bed:3, ac:1, beds:133}
+
 ];
 
 function recommend(){
 
-let cgpa=parseFloat(document.getElementById("cgpa").value);
-let bed=parseInt(document.getElementById("bed").value);
-let ac=parseInt(document.getElementById("ac").value);
+let cgpa = parseFloat(document.getElementById("cgpa").value);
+let bed = parseInt(document.getElementById("bed").value);
+let ac = parseInt(document.getElementById("ac").value);
 
-let filtered=hostels.filter(h=>h.bed==bed && h.ac==ac);
+let filtered = [];
 
-filtered.forEach(h=>{
-h.chance=(h.beds/248)*(cgpa/10)*100;
+for(let i=0;i<hostels.length;i++){
+
+if(hostels[i].bed == bed && hostels[i].ac == ac){
+
+let chance = (cgpa/10) * hostels[i].beds;
+
+filtered.push({
+block:hostels[i].block,
+beds:hostels[i].beds,
+chance:chance
 });
+
+}
+
+}
 
 filtered.sort((a,b)=>b.chance-a.chance);
 
-let output="<b>Top Hostel Options</b><br><br>";
+let output = "<h3>Top Hostel Options</h3>";
 
-filtered.slice(0,3).forEach((h,i)=>{
-output+=`${i+1}. Block ${h.block} | Beds ${h.beds} | Chance ${h.chance.toFixed(2)}%<br>`;
-});
+if(filtered.length==0){
 
-document.getElementById("result").innerHTML=output;
+output += "No matching hostels found";
+
+}
+
+else{
+
+for(let i=0;i<Math.min(3,filtered.length);i++){
+
+output +=
+(i+1)+". Block "+filtered[i].block+
+" | Beds: "+filtered[i].beds+
+" | Chance: "+filtered[i].chance.toFixed(2)+"%<br>";
+
+}
+
+}
+
+document.getElementById("result").innerHTML = output;
 
 }
 
